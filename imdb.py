@@ -84,8 +84,7 @@ def train(data):
             optimizer.step()
             acc = get_accuracy(label.cpu().data.numpy(), out.cpu().data.numpy())
             train_acc += acc
-            if (iter // 100) == 0:
-                print (acc)
+            print (iter)
             print ("finished epoch" + str(iter))
         print ("Accuracy for this epoch:")
         print (train_acc/len(data))
