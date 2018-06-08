@@ -53,7 +53,7 @@ train, test = datasets.IMDB.splits(TEXT, LABEL)
 TEXT.build_vocab(train) #get rid of vectors=GloVe(name='6B', dim=300)
 LABEL.build_vocab(train)
 label_2_idx = {1: 0, 2: 1}
-batch_size = 64
+batch_size = 256
 train_iter, test_iter = data.BucketIterator.splits(
     (train, test), batch_sizes=(batch_size, batch_size),
     shuffle=True, device=-1)
@@ -71,7 +71,7 @@ def train(data):
     model.train()
     train_acc = 0.0
     for i in range(n_epoch):
-        print ("Epoch" + str(i))
+        print ("Epoch: " + str(i))
         tr_itr = enumerate(data)
         for iter, mb in tr_itr:
             sent, label = mb.text, mb.label
@@ -85,7 +85,7 @@ def train(data):
             acc = get_accuracy(label.cpu().data.numpy(), out.cpu().data.numpy())
             train_acc += acc
         print ("Accuracy for this epoch:")
-        print (train_acc/len(train_iter))
+        print (train_acc/len(data))
 
 
 # Evaluation
@@ -102,7 +102,7 @@ def test(data):
         out = model(sent)
         acc = get_accuracy(label.cpu().data.numpy(), out.cpu().data.numpy())
         test_acc += acc
-    print (test_acc/len(test_iter))
+    print (test_acc/len(data))
 
 
 if __name__ == '__main__':
