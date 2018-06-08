@@ -39,7 +39,7 @@ class LSTM(torch.nn.Module) :
         return F.sigmoid(y).squeeze()
 
     def init_hidden(self, batch_size):
-        return Variable(torch.zeros(1, batch_size, self.hidden_dim)), Variable(torch.zeros(1, batch_size, self.hidden_dim))
+        return Variable(torch.zeros(1, batch_size, self.hidden_dim)).cuda(), Variable(torch.zeros(1, batch_size, self.hidden_dim)).cuda()
 
 
 # set up fields
