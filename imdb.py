@@ -78,7 +78,6 @@ def train():
             loss.backward()
             optimizer.step()
             acc = get_accuracy(label.cpu().data.numpy(), out.cpu().data.numpy())
-            print (acc)
 
 
 # Evaluation
