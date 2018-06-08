@@ -67,11 +67,11 @@ if cuda:
 
 
 # Train the model
-def train():
+def train(data):
     model.train()
     train_acc = 0.0
     for i in range(n_epoch):
-        tr_itr = enumerate(train_iter)
+        tr_itr = enumerate(data)
         train_iter = tqdm(tr_itr)
         train_iter.total = len(train) // batch_size
         for iter, mb in train_iter:
@@ -87,11 +87,12 @@ def train():
             train_acc += acc
         print (train_acc/len(train_iter))
 
+
 # Evaluation
-def test():
+def test(data):
     model.eval()
     test_acc = 0.0
-    test_iter = enumerate(test_iter)
+    test_iter = enumerate(data)
     test_iter = tqdm(test_iter)
     test_iter.total = len(test) // batch_size
     for iter, mb in test_iter:
@@ -106,5 +107,5 @@ def test():
 
 
 if __name__ == '__main__':
-    train()
-    test()
+    train(train_iter)
+    test(test_iter)
