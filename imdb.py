@@ -53,7 +53,7 @@ train, test = datasets.IMDB.splits(TEXT, LABEL)
 TEXT.build_vocab(train) #get rid of vectors=GloVe(name='6B', dim=300)
 LABEL.build_vocab(train)
 label_2_idx = {1: 0, 2: 1}
-batch_size = 256
+batch_size = 1024
 train_iter, test_iter = data.BucketIterator.splits(
     (train, test), batch_sizes=(batch_size, batch_size),
     shuffle=True, device=-1)
