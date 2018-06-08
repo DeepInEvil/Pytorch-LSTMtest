@@ -60,6 +60,8 @@ print (len(TEXT.vocab))
 # Initialize the lstm model
 model = LSTM(50, 32, len(TEXT.vocab))
 optimizer = optim.Adam(model.parameters(), lr=1e-3)
+if cuda:
+    model.cuda()
 
 
 # Train the model
