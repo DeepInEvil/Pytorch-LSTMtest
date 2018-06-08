@@ -8,8 +8,9 @@ import torch.nn.functional as F
 import numpy as np
 import tqdm
 
+torch.manual_seed(666)
 max_sent_len = 200
-n_epoch = 100
+n_epoch = 50
 cuda = True
 
 
@@ -29,11 +30,13 @@ class LSTM(torch.nn.Module) :
         super(LSTM, self).__init__()
         self.hidden_dim = hidden_dim
         self.embeddings = nn.Embedding(vocab_size+1, embedding_dim)
+        self.drop = nn.Dropout(0.4)
         self.lstm = nn.LSTM(embedding_dim, hidden_dim)
         self.linearOut = nn.Linear(hidden_dim, 1)
 
     def forward(self, inputs):
         x = self.embeddings(inputs)
+        x = self.drop(x)
         h0, c0 = self.init_hidden(inputs.size(1))
         lstm_out, (hn, cn) = self.lstm(x, (h0, c0))
         x = hn.squeeze()
