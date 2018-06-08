@@ -63,7 +63,7 @@ train_iter, test_iter = data.BucketIterator.splits(
 
 print (len(TEXT.vocab))
 # Initialize the lstm model
-model = LSTM(100, 128, len(TEXT.vocab))
+model = LSTM(50, 128, len(TEXT.vocab))
 optimizer = optim.Adam(model.parameters(), lr=1e-3)
 if cuda:
     model.cuda()
