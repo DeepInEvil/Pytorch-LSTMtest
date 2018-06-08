@@ -72,7 +72,7 @@ def train():
             sent, label = mb.text, mb.label
             label = Variable(torch.from_numpy(np.array([label_2_idx[l.data[0]] for l in label])))
             if cuda:
-                sent, label = label.cuda(), sent.cuda()
+                sent, label = sent.cuda(), label.cuda()
             out = model(sent)
             loss = F.binary_cross_entropy(out, label.type(torch.FloatTensor))
             loss.backward()
@@ -89,7 +89,7 @@ def test():
         sent, label = mb.text, mb.label
         label = Variable(torch.from_numpy(np.array([label_2_idx[l.data[0]] for l in label])))
         if cuda:
-            sent, label = label.cuda(), sent.cuda()
+            sent, label = sent.cuda(), label.cuda()
         out = model(sent)
         acc = get_accuracy(label.data.numpy(), out.data.numpy())
         test_acc += acc
