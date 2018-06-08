@@ -71,8 +71,8 @@ def train():
     model.train()
     train_acc = 0.0
     for i in range(n_epoch):
-        train_iter = enumerate(train_iter)
-        train_iter = tqdm(train_iter)
+        tr_itr = enumerate(train_iter)
+        train_iter = tqdm(tr_itr)
         train_iter.total = len(train) // batch_size
         for iter, mb in train_iter:
             sent, label = mb.text, mb.label
