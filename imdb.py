@@ -62,7 +62,7 @@ class LSTMC(torch.nn.Module):
         x = self.drop(x)
         h0, c0 = self.init_hidden(inputs.size(1))
         for i in range(inputs.size(0)):
-            h0, c0 = self.lstm(x, (h0, c0))
+            h0, c0 = self.lstm(x[i], (h0, c0))
         x = h0.squeeze()
         y = self.linearOut(x)
         return F.sigmoid(y).squeeze()
@@ -70,6 +70,7 @@ class LSTMC(torch.nn.Module):
     def init_hidden(self, batch_size):
         return Variable(torch.zeros(batch_size, self.hidden_dim)).cuda(), Variable(
             torch.zeros(batch_size, self.hidden_dim)).cuda()
+
 
 # set up fields
 TEXT = data.Field(lower=True, pad_token=0, fix_length=200)
