@@ -6,6 +6,8 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 import numpy as np
+import tqdm
+
 max_sent_len = 200
 n_epoch = 20
 cuda = True
@@ -67,8 +69,12 @@ if cuda:
 # Train the model
 def train():
     model.train()
+    train_acc = 0.0
     for i in range(n_epoch):
-        for iter, mb in enumerate(train_iter):
+        train_iter = enumerate(train_iter)
+        train_iter = tqdm(train_iter)
+        train_iter.total = len(train) // batch_size
+        for iter, mb in train_iter:
             sent, label = mb.text, mb.label
             label = Variable(torch.from_numpy(np.array([label_2_idx[l.data[0]] for l in label])))
             if cuda:
@@ -78,13 +84,17 @@ def train():
             loss.backward()
             optimizer.step()
             acc = get_accuracy(label.cpu().data.numpy(), out.cpu().data.numpy())
-
+            train_acc += acc
+        print (train_acc/len(train_iter))
 
 # Evaluation
 def test():
     model.eval()
     test_acc = 0.0
-    for iter, mb in enumerate(test_iter):
+    test_iter = enumerate(test_iter)
+    test_iter = tqdm(test_iter)
+    test_iter.total = len(test) // batch_size
+    for iter, mb in test_iter:
         sent, label = mb.text, mb.label
         label = Variable(torch.from_numpy(np.array([label_2_idx[l.data[0]] for l in label])))
         if cuda:
