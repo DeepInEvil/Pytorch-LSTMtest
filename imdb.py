@@ -12,6 +12,7 @@ torch.manual_seed(666)
 max_sent_len = 200
 n_epoch = 50
 cuda = True
+run_cell = True
 
 
 def get_accuracy(truth, pred):
@@ -88,7 +89,11 @@ train_iter, test_iter = data.BucketIterator.splits(
 
 print (len(TEXT.vocab))
 # Initialize the lstm model
-model = LSTMC(50, 64, len(TEXT.vocab))
+if run_cell:
+    model = LSTMC(50, 64, len(TEXT.vocab))
+else:
+    model = LSTM(50, 64, len(TEXT.vocab))
+
 optimizer = optim.Adam(model.parameters(), lr=1e-3)
 if cuda:
     model.cuda()
@@ -113,7 +118,7 @@ def train(data):
             acc = get_accuracy(label.cpu().data.numpy(), out.cpu().data.numpy())
             train_acc += acc
         print ("Accuracy for this epoch:")
-    print (train_acc/len(data))
+        print (train_acc/len(data))
 
 
 # Evaluation
