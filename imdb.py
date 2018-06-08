@@ -31,7 +31,7 @@ class LSTM(torch.nn.Module) :
         self.hidden_dim = hidden_dim
         self.embeddings = nn.Embedding(vocab_size+1, embedding_dim)
         self.drop = nn.Dropout(0.4)
-        self.lstm = nn.LSTM(embedding_dim, hidden_dim)
+        self.lstm = nn.LSTM(embedding_dim, hidden_dim, 1)
         self.linearOut = nn.Linear(hidden_dim, 1)
 
     def forward(self, inputs):
@@ -44,8 +44,32 @@ class LSTM(torch.nn.Module) :
         return F.sigmoid(y).squeeze()
 
     def init_hidden(self, batch_size):
-        return Variable(torch.zeros(1, batch_size, self.hidden_dim)).cuda(), Variable(torch.zeros(1, batch_size, self.hidden_dim)).cuda()
+        return Variable(torch.zeros(1, batch_size, self.hidden_dim)).cuda(), Variable(
+            torch.zeros(1, batch_size, self.hidden_dim)).cuda()
 
+
+class LSTMC(torch.nn.Module):
+    def __init__(self, embedding_dim, hidden_dim, vocab_size):
+        super(LSTMC, self).__init__()
+        self.hidden_dim = hidden_dim
+        self.embeddings = nn.Embedding(vocab_size + 1, embedding_dim)
+        self.drop = nn.Dropout(0.4)
+        self.lstm = nn.LSTMCell(embedding_dim, hidden_dim)
+        self.linearOut = nn.Linear(hidden_dim, 1)
+
+    def forward(self, inputs):
+        x = self.embeddings(inputs)
+        x = self.drop(x)
+        h0, c0 = self.init_hidden(inputs.size(1))
+        for i in range(inputs.size(0)):
+            h0, c0 = self.lstm(x, (h0, c0))
+        x = h0.squeeze()
+        y = self.linearOut(x)
+        return F.sigmoid(y).squeeze()
+
+    def init_hidden(self, batch_size):
+        return Variable(torch.zeros(batch_size, self.hidden_dim)).cuda(), Variable(
+            torch.zeros(batch_size, self.hidden_dim)).cuda()
 
 # set up fields
 TEXT = data.Field(lower=True, pad_token=0, fix_length=200)
@@ -63,7 +87,7 @@ train_iter, test_iter = data.BucketIterator.splits(
 
 print (len(TEXT.vocab))
 # Initialize the lstm model
-model = LSTM(50, 128, len(TEXT.vocab))
+model = LSTMC(50, 64, len(TEXT.vocab))
 optimizer = optim.Adam(model.parameters(), lr=1e-3)
 if cuda:
     model.cuda()
