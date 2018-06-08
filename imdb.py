@@ -86,6 +86,7 @@ def train(data):
             train_acc += acc
             if (iter // 100) == 0:
                 print (acc)
+            print ("finished epoch" + str(iter))
         print ("Accuracy for this epoch:")
         print (train_acc/len(data))
 
