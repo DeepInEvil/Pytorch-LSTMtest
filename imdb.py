@@ -56,7 +56,7 @@ label_2_idx = {1: 0, 2: 1}
 batch_size = 1024
 train_iter, test_iter = data.BucketIterator.splits(
     (train, test), batch_sizes=(batch_size, batch_size),
-    shuffle=True, device=-1)
+    shuffle=True, device=None)
 
 print (len(TEXT.vocab))
 # Initialize the lstm model
