@@ -74,10 +74,10 @@ def train():
             if cuda:
                 sent, label = sent.cuda(), label.cuda()
             out = model(sent)
-            loss = F.binary_cross_entropy(out, label.type(torch.FloatTensor))
+            loss = F.binary_cross_entropy(out, label.type(torch.cuda.FloatTensor))
             loss.backward()
             optimizer.step()
-            acc = get_accuracy(label.data.numpy(), out.data.numpy())
+            acc = get_accuracy(label.cpu.data.numpy(), out.cpu.data.numpy())
             print (acc)
 
 
@@ -91,7 +91,7 @@ def test():
         if cuda:
             sent, label = sent.cuda(), label.cuda()
         out = model(sent)
-        acc = get_accuracy(label.data.numpy(), out.data.numpy())
+        acc = get_accuracy(label.cpu.data.numpy(), out.cpu.data.numpy())
         test_acc += acc
     print (test_acc/len(test_iter))
 
