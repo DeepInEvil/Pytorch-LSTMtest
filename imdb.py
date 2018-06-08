@@ -63,7 +63,7 @@ train_iter, test_iter = data.BucketIterator.splits(
 
 print (len(TEXT.vocab))
 # Initialize the lstm model
-model = LSTM(50, 32, len(TEXT.vocab))
+model = LSTM(100, 128, len(TEXT.vocab))
 optimizer = optim.Adam(model.parameters(), lr=1e-3)
 if cuda:
     model.cuda()
@@ -88,7 +88,7 @@ def train(data):
             acc = get_accuracy(label.cpu().data.numpy(), out.cpu().data.numpy())
             train_acc += acc
         print ("Accuracy for this epoch:")
-        print (train_acc/len(data))
+    print (train_acc/len(data))
 
 
 # Evaluation
