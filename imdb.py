@@ -69,8 +69,8 @@ if cuda:
 # Train the model
 def train(data):
     model.train()
-    train_acc = 0.0
     for i in range(n_epoch):
+        train_acc = 0.0
         print ("Epoch: " + str(i))
         tr_itr = enumerate(data)
         for iter, mb in tr_itr:
@@ -84,8 +84,6 @@ def train(data):
             optimizer.step()
             acc = get_accuracy(label.cpu().data.numpy(), out.cpu().data.numpy())
             train_acc += acc
-            print (iter)
-            print ("finished epoch" + str(iter))
         print ("Accuracy for this epoch:")
         print (train_acc/len(data))
 
