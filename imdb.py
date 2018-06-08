@@ -71,10 +71,9 @@ def train(data):
     model.train()
     train_acc = 0.0
     for i in range(n_epoch):
+        print ("Epoch" + str(i))
         tr_itr = enumerate(data)
-        train_iter = tqdm(tr_itr)
-        train_iter.total = len(train) // batch_size
-        for iter, mb in train_iter:
+        for iter, mb in tr_itr:
             sent, label = mb.text, mb.label
             label = Variable(torch.from_numpy(np.array([label_2_idx[l.data[0]] for l in label])))
             if cuda:
@@ -85,16 +84,16 @@ def train(data):
             optimizer.step()
             acc = get_accuracy(label.cpu().data.numpy(), out.cpu().data.numpy())
             train_acc += acc
+        print ("Accuracy for this epoch:")
         print (train_acc/len(train_iter))
 
 
 # Evaluation
 def test(data):
+    print ("Testing.............................")
     model.eval()
     test_acc = 0.0
     test_iter = enumerate(data)
-    test_iter = tqdm(test_iter)
-    test_iter.total = len(test) // batch_size
     for iter, mb in test_iter:
         sent, label = mb.text, mb.label
         label = Variable(torch.from_numpy(np.array([label_2_idx[l.data[0]] for l in label])))
