@@ -7,6 +7,7 @@ from torch import nn
 import torch.nn.functional as F
 import numpy as np
 import tqdm
+from CustomLSTMCell import LSTMCell
 
 torch.manual_seed(666)
 max_sent_len = 200
@@ -55,17 +56,18 @@ class LSTMC(torch.nn.Module):
         self.hidden_dim = hidden_dim
         self.embeddings = nn.Embedding(vocab_size + 1, embedding_dim)
         self.drop = nn.Dropout(0.4)
-        self.lstm = nn.LSTMCell(embedding_dim, hidden_dim)
+        self.lstm = LSTMCell(embedding_dim, hidden_dim, batch_first=False)
         self.linearOut = nn.Linear(hidden_dim, 1)
 
     def forward(self, inputs):
         x = self.embeddings(inputs)
         x = self.drop(x)
         h0, c0 = self.init_hidden(inputs.size(1))
-        for i in range(inputs.size(0)):
-            h0, c0 = self.lstm(x[i], (h0, c0))
-        x = h0.squeeze()
-        y = self.linearOut(x)
+        lstm_out, hn = self.lstm(x, (h0, c0))
+        if isinstance(hn, tuple):
+            y = self.linearOut(hn[0])
+        else:
+            y = self.linearOut(hn)
         return F.sigmoid(y).squeeze()
 
     def init_hidden(self, batch_size):
