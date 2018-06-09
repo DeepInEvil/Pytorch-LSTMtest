@@ -13,7 +13,7 @@ torch.manual_seed(666)
 max_sent_len = 200
 n_epoch = 50
 cuda = True
-run_cell = False
+run_cell = True
 
 
 def get_accuracy(truth, pred):
